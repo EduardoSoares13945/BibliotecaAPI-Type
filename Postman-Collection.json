@@ -1,0 +1,194 @@
+{
+  "info": {
+    "_postman_id": "biblioteca-api-001",
+    "name": "Biblioteca API",
+    "description": "Collection para testar API de Gerenciamento de Biblioteca",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "event": [],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Verifica se a API está funcionando"
+      },
+      "response": []
+    },
+    {
+      "name": "Criar Livro",
+      "event": [],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"titulo\":\"Clean Code\",\"autor\":\"Robert C. Martin\",\"isbn\":\"978-0132350884\",\"anoPublicacao\":2008,\"disponivel\":true}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/livros",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "livros"
+          ]
+        },
+        "description": "Cria um novo livro"
+      },
+      "response": []
+    },
+    {
+      "name": "Listar Todos os Livros",
+      "event": [],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/livros",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "livros"
+          ]
+        },
+        "description": "Retorna lista de todos os livros"
+      },
+      "response": []
+    },
+    {
+      "name": "Obter Livro por ID",
+      "event": [],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/livros/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "livros",
+            "1"
+          ]
+        },
+        "description": "Obtém um livro específico pelo ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Atualizar Livro (PUT)",
+      "event": [],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"titulo\":\"Clean Code - Edição Revisada\",\"disponivel\":false}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/livros/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "livros",
+            "1"
+          ]
+        },
+        "description": "Atualiza todas as informações de um livro"
+      },
+      "response": []
+    },
+    {
+      "name": "Atualizar Livro (PATCH)",
+      "event": [],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"disponivel\":true}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/livros/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "livros",
+            "1"
+          ]
+        },
+        "description": "Atualiza parcialmente um livro"
+      },
+      "response": []
+    },
+    {
+      "name": "Remover Livro",
+      "event": [],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/livros/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "livros",
+            "1"
+          ]
+        },
+        "description": "Remove um livro do sistema"
+      },
+      "response": []
+    }
+  ]
+}
