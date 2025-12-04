@@ -6,20 +6,16 @@ import livroRoutes from "./routes/livroRoutes";
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Middleware de log
 app.use((req: Request, res: Response, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
-// Rotas
 app.use("/api/livros", livroRoutes);
 
-// Rota de health check
 app.get("/health", (req: Request, res: Response) => {
   res.status(200).json({
     status: "OK",
@@ -28,7 +24,6 @@ app.get("/health", (req: Request, res: Response) => {
   });
 });
 
-// Rota raiz
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     nome: "API de Gerenciamento de Biblioteca",
@@ -41,7 +36,6 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-// Tratamento de rotas não encontradas
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     erro: "Recurso não encontrado",
@@ -50,21 +44,18 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// Inicializar banco de dados e servidor
 async function iniciarServidor() {
   try {
-    // Inicializar conexão com o banco de dados
     await AppDataSource.initialize();
     console.log("✓ Banco de dados inicializado com sucesso");
 
-    // Iniciar servidor Express
     app.listen(PORT, () => {
       console.log(`✓ Servidor rodando em http://localhost:${PORT}`);
       console.log(`✓ Para testar: http://localhost:${PORT}/health`);
       console.log(`✓ Endpoints de livros em: http://localhost:${PORT}/api/livros`);
     });
   } catch (erro) {
-    console.error("✗ Erro ao iniciar o servidor:", erro);
+    console.log("✗ Erro ao iniciar o servidor:", erro);
     process.exit(1);
   }
 }

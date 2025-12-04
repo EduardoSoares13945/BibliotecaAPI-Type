@@ -9,15 +9,10 @@ export class LivroController {
     this.livroRepository = new LivroRepository();
   }
 
-  /**
-   * POST /api/livros
-   * Cria um novo livro com validações de negócio
-   */
   async criar(req: Request, res: Response): Promise<void> {
     try {
       const { titulo, autor, isbn, anoPublicacao, disponivel } = req.body;
 
-      // Validações de negócio
       if (!titulo || !autor || !isbn || anoPublicacao === undefined) {
         res.status(400).json({
           erro: "Erro na validação dos dados",
@@ -26,7 +21,6 @@ export class LivroController {
         return;
       }
 
-      // Validar formato ISBN (básico: comprimento entre 10 e 17)
       if (isbn.length < 10 || isbn.length > 17) {
         res.status(400).json({
           erro: "Erro na validação do ISBN",
@@ -35,7 +29,6 @@ export class LivroController {
         return;
       }
 
-      // Validar ano de publicação
       const anoAtual = new Date().getFullYear();
       if (anoPublicacao < 1000 || anoPublicacao > anoAtual) {
         res.status(400).json({
@@ -45,7 +38,6 @@ export class LivroController {
         return;
       }
 
-      // Verificar se ISBN já existe
       const livroExistente = await this.livroRepository.obterPorIsbn(isbn);
       if (livroExistente) {
         res.status(409).json({
@@ -55,7 +47,6 @@ export class LivroController {
         return;
       }
 
-      // Criar o livro
       const novoLivro = await this.livroRepository.criar({
         titulo,
         autor,
@@ -69,18 +60,13 @@ export class LivroController {
         livro: novoLivro,
       });
     } catch (erro) {
-      console.error("Erro ao criar livro:", erro);
       res.status(500).json({
         erro: "Erro interno do servidor",
-        mensagem: "Falha ao criar o livro",
+        mensagem: erro instanceof Error ? erro.message : "Erro desconhecido",
       });
     }
   }
 
-  /**
-   * GET /api/livros
-   * Retorna a lista completa de livros
-   */
   async obterTodos(req: Request, res: Response): Promise<void> {
     try {
       const livros = await this.livroRepository.obterTodos();
@@ -90,23 +76,17 @@ export class LivroController {
         livros: livros,
       });
     } catch (erro) {
-      console.error("Erro ao obter livros:", erro);
       res.status(500).json({
         erro: "Erro interno do servidor",
-        mensagem: "Falha ao obter a lista de livros",
+        mensagem: erro instanceof Error ? erro.message : "Erro desconhecido",
       });
     }
   }
 
-  /**
-   * GET /api/livros/:id
-   * Retorna os detalhes de um livro específico
-   */
   async obterPorId(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
 
-      // Validar se o ID é um número
       if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
         res.status(400).json({
           erro: "Erro na validação",
@@ -129,24 +109,18 @@ export class LivroController {
         livro: livro,
       });
     } catch (erro) {
-      console.error("Erro ao obter livro:", erro);
       res.status(500).json({
         erro: "Erro interno do servidor",
-        mensagem: "Falha ao obter o livro",
+        mensagem: erro instanceof Error ? erro.message : "Erro desconhecido",
       });
     }
   }
 
-  /**
-   * PUT /api/livros/:id
-   * Atualiza todas as informações de um livro
-   */
   async atualizar(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const { titulo, autor, isbn, anoPublicacao, disponivel } = req.body;
 
-      // Validar se o ID é um número
       if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
         res.status(400).json({
           erro: "Erro na validação",
@@ -155,7 +129,6 @@ export class LivroController {
         return;
       }
 
-      // Verificar se o livro existe
       const livroExistente = await this.livroRepository.obterPorId(Number(id));
       if (!livroExistente) {
         res.status(404).json({
@@ -165,7 +138,6 @@ export class LivroController {
         return;
       }
 
-      // Validar dados se forem fornecidos
       if (titulo !== undefined && (!titulo || typeof titulo !== "string")) {
         res.status(400).json({
           erro: "Erro na validação",
@@ -191,7 +163,6 @@ export class LivroController {
           return;
         }
 
-        // Verificar se novo ISBN já existe em outro livro
         if (isbn !== livroExistente.isbn) {
           const livroComIsbn = await this.livroRepository.obterPorIsbn(isbn);
           if (livroComIsbn) {
@@ -215,7 +186,6 @@ export class LivroController {
         }
       }
 
-      // Preparar dados para atualização (apenas campos fornecidos)
       const dadosAtualizacao: Partial<Livro> = {};
       if (titulo !== undefined) dadosAtualizacao.titulo = titulo;
       if (autor !== undefined) dadosAtualizacao.autor = autor;
@@ -230,23 +200,17 @@ export class LivroController {
         livro: livroAtualizado,
       });
     } catch (erro) {
-      console.error("Erro ao atualizar livro:", erro);
       res.status(500).json({
         erro: "Erro interno do servidor",
-        mensagem: "Falha ao atualizar o livro",
+        mensagem: erro instanceof Error ? erro.message : "Erro desconhecido",
       });
     }
   }
 
-  /**
-   * DELETE /api/livros/:id
-   * Remove um livro do sistema
-   */
   async remover(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
 
-      // Validar se o ID é um número
       if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
         res.status(400).json({
           erro: "Erro na validação",
@@ -255,7 +219,6 @@ export class LivroController {
         return;
       }
 
-      // Verificar se o livro existe
       const livroExistente = await this.livroRepository.obterPorId(Number(id));
       if (!livroExistente) {
         res.status(404).json({
@@ -265,7 +228,6 @@ export class LivroController {
         return;
       }
 
-      // Remover o livro
       await this.livroRepository.remover(Number(id));
 
       res.status(200).json({
@@ -273,20 +235,14 @@ export class LivroController {
         livroRemovido: livroExistente,
       });
     } catch (erro) {
-      console.error("Erro ao remover livro:", erro);
       res.status(500).json({
         erro: "Erro interno do servidor",
-        mensagem: "Falha ao remover o livro",
+        mensagem: erro instanceof Error ? erro.message : "Erro desconhecido",
       });
     }
   }
 
-  /**
-   * PATCH /api/livros/:id
-   * Atualiza parcialmente as informações de um livro
-   */
   async atualizarParcial(req: Request, res: Response): Promise<void> {
-    // Reutiliza a mesma lógica de atualização
     await this.atualizar(req, res);
   }
 }
